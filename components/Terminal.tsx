@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
+import { tokenize } from "@/components/Parser"
 export function Terminal() {
 	const [input, setInput] = useState("")
 	const [logs, setLogs] = useState([{ cmd: "intro", output: "Hi, ShiXun here, type `help` to show all the available options" }])
@@ -16,8 +17,8 @@ export function Terminal() {
 		}
 	}, [])
 
-
 	const executeCommand = (command: string) => {
+		console.log(tokenize(command))
 		const trimmedCommand = command.trim();
 		if (trimmedCommand === "clear") {
 			setLogs([])
