@@ -1,3 +1,8 @@
+type TokenType = {
+	tag: string,
+	value: string,
+}
+
 export function tokenize(input: string) {
 	let regex = /[^\s"']+|"([^"]*)"|'([^']*)'/g
 	let match
@@ -21,3 +26,6 @@ export function tokenize(input: string) {
 	return tokens;
 }
 
+export const commands = {
+	"echo": (args: TokenType[]) => args.map((arg) => arg.value).join(" ")
+}

@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect, useRef } from "react"
-import { tokenize } from "@/components/Parser"
+import { tokenize, commands } from "@/components/Parser"
+
 export function Terminal() {
 	const terminalRef = useRef<HTMLDivElement>(null)
 	const inputRef = useRef<HTMLElement>(null)
@@ -17,16 +18,23 @@ export function Terminal() {
 		}
 	}, [])
 
-	const executeCommand = (command: string) => {
-		const tokens = tokenize(command)
+	const executeCommand = (rawCmd: string) => {
+		const tokens = tokenize(rawCmd)
+		const [cmd, ...rest] = tokens
+
 		if (tokens.length === 0) return ""
-		if (command === "clear") {
+		if (rawCmd === "clear") {
 			setLogs([])
 			return ""
 		}
 
-		const output = command === "" ? "" : `${command}: command not found.`
-		writeHistory(output)
+		try {
+			const cmdFn = commands?.[cmd.value as keyof typeof commands]
+			const output = cmdFn(rest)
+			writeHistory(output)
+		} catch (error: unknown) {
+			writeHistory(`${cmd.value}: command not found.`)
+		}
 	}
 
 	const writeHistory = (output: string) => {
