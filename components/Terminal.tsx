@@ -59,8 +59,8 @@ export function Terminal() {
 							</div>
 						)
 					}))}
-					<div className="space-x-2">
-						<span>limshixun@portfolio$</span>
+					<div>
+						<span className="mr-2">limshixun@portfolio$</span>
 						<span
 							ref={inputRef}
 							contentEditable
@@ -79,7 +79,7 @@ export function Terminal() {
 							}}
 							className="focus:outline-0 caret-transparent"
 						/>
-						<span className="h-5 bg-white w-3" />
+						<span className="bg-white">l</span>
 					</div>
 				</div>
 			</div>
