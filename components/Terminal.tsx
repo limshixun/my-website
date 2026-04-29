@@ -51,7 +51,7 @@ export function Terminal() {
 					{logs.length > 0 && (logs.map(({ cmd, output }, idx) => {
 						return (
 							<div key={idx}>
-								<div className="flex gap-2">
+								<div className="space-x-2">
 									<span>limshixun@portfolio$</span>
 									<span>{cmd}</span>
 								</div>
@@ -59,7 +59,7 @@ export function Terminal() {
 							</div>
 						)
 					}))}
-					<div className="flex gap-2">
+					<div className="space-x-2">
 						<span>limshixun@portfolio$</span>
 						<span
 							ref={inputRef}
@@ -77,8 +77,9 @@ export function Terminal() {
 									setInput("")
 								}
 							}}
-							className="focus:outline-0"
+							className="focus:outline-0 caret-transparent"
 						/>
+						<span className="h-5 bg-white w-3" />
 					</div>
 				</div>
 			</div>
