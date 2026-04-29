@@ -10,12 +10,30 @@ export function Terminal() {
 	const [logs, setLogs] = useState([{ cmd: "intro", output: "Hi, ShiXun here, type `help` to show all the available options" }])
 	const caretRef = useRef<HTMLElement>(null)
 
+	const createDebugBox = (rect: DOMRect) => {
+		document.getElementById("debug-box")?.remove()
+
+		const box = document.createElement('div')
+		box.id = 'debug-box'
+		box.style.position = 'fixed'
+		box.style.border = '2px solid red'
+		box.style.pointerEvents = 'none'
+		box.style.zIndex = '99'
+
+		// Map the rect properties
+		box.style.left = `${rect.left}px`;
+		box.style.top = `${rect.top}px`;
+		box.style.width = `${rect.width}px`;
+		box.style.height = `${rect.height}px`;
+
+		document.body.appendChild(box);
+	}
+
 	const getCaretPosition = () => {
 		const selection = window?.getSelection()
 		if (!selection || selection.rangeCount === 0) return null;
 		const range = selection.getRangeAt(0)
-		const offset = range.startOffset
-		const rects = selection.getRangeAt(0).getClientRects()
+		const rects = range.getClientRects()
 		return rects
 	}
 
@@ -23,8 +41,12 @@ export function Terminal() {
 		const rects = getCaretPosition()!
 		const terminalRect = terminalRef.current?.getBoundingClientRect()
 		if (terminalRect && rects && rects.length > 0) {
-			const position = rects[0].x - terminalRect.x || 0
-			caretRef.current!.style.left = `${position}px`
+			const x = rects[0].x - terminalRect.x
+			const y = rects[0].y - terminalRect.y
+			if (caretRef.current) {
+				caretRef.current.style.transform = `translate(${x}px ${y}px)`
+				createDebugBox(terminalRect)
+			}
 		}
 	}
 
@@ -89,13 +111,14 @@ export function Terminal() {
 							}}
 							onKeyUp={(e) => {
 								if (e.repeat) console.log('hold')
+							}}
+							onKeyDownCapture={(e) => {
 								syncCaretPosition()
 							}}
-							onChange={() => {
+							onKeyUpCapture={() => {
 								syncCaretPosition()
 							}}
 							onKeyDown={(e) => {
-								syncCaretPosition()
 								if (e.code.toLowerCase() === "enter") {
 									// Prevent to nextline
 									e.preventDefault()
@@ -113,7 +136,7 @@ export function Terminal() {
 							}}
 							className="focus:outline-0 caret-transparent"
 						/>
-						<span ref={caretRef} className="bg-white animation-blink absolute w-2 h-[21px] "></span>
+						<span ref={caretRef} className="bg-white animation-blink fixed w-2 h-[21px] "></span>
 					</div>
 				</div>
 			</div>
