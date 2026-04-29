@@ -1,0 +1,19 @@
+.animation-blink {
+	animation-duration: 1s;
+	animation-name: blink;
+	animation-iteration-count: infinite;
+}
+
+@keyframes blink {
+	0% {
+		opacity: 0.1;
+	}
+
+	50% {
+		opacity: 1
+	}
+
+	100% {
+		opacity: 0.1;
+	}
+}

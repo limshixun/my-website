@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect, useRef } from "react"
 import { tokenize, commands } from "@/components/Parser"
+import "./terminal.css"
 
 export function Terminal() {
 	const terminalRef = useRef<HTMLDivElement>(null)
@@ -79,7 +80,7 @@ export function Terminal() {
 							}}
 							className="focus:outline-0 caret-transparent"
 						/>
-						<span className="bg-white">l</span>
+						<span className="bg-white animation-blink">l</span>
 					</div>
 				</div>
 			</div>
