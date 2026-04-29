@@ -8,6 +8,25 @@ export function Terminal() {
 	const inputRef = useRef<HTMLElement>(null)
 	const [input, setInput] = useState("")
 	const [logs, setLogs] = useState([{ cmd: "intro", output: "Hi, ShiXun here, type `help` to show all the available options" }])
+	const caretRef = useRef<HTMLElement>(null)
+
+	const getCaretPosition = () => {
+		const selection = window?.getSelection()
+		if (!selection || selection.rangeCount === 0) return null;
+		const range = selection.getRangeAt(0)
+		const offset = range.startOffset
+		const rects = selection.getRangeAt(0).getClientRects()
+		return rects
+	}
+
+	const syncCaretPosition = () => {
+		const rects = getCaretPosition()!
+		const terminalRect = terminalRef.current?.getBoundingClientRect()
+		if (terminalRect && rects && rects.length > 0) {
+			const position = rects[0].x - terminalRect.x || 0
+			caretRef.current!.style.left = `${position}px`
+		}
+	}
 
 	// Focus on input when clicked on terminal
 	useEffect(() => {
@@ -68,7 +87,15 @@ export function Terminal() {
 							onInput={(e) => {
 								setInput(e.currentTarget.textContent || "")
 							}}
+							onKeyUp={(e) => {
+								if (e.repeat) console.log('hold')
+								syncCaretPosition()
+							}}
+							onChange={() => {
+								syncCaretPosition()
+							}}
 							onKeyDown={(e) => {
+								syncCaretPosition()
 								if (e.code.toLowerCase() === "enter") {
 									// Prevent to nextline
 									e.preventDefault()
@@ -78,9 +105,15 @@ export function Terminal() {
 									setInput("")
 								}
 							}}
+							onMouseUp={() => {
+								syncCaretPosition()
+							}}
+							onMouseDown={() => {
+								syncCaretPosition()
+							}}
 							className="focus:outline-0 caret-transparent"
 						/>
-						<span className="bg-white animation-blink">l</span>
+						<span ref={caretRef} className="bg-white animation-blink absolute w-2 h-[21px] "></span>
 					</div>
 				</div>
 			</div>
